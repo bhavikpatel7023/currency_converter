@@ -1,4 +1,4 @@
-export interface ConverterForm {
+export class ConverterForm {
   from: string;
   to: string;
   date: string;

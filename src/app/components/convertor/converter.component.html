@@ -1,8 +1,11 @@
 <div class="content" role="main">
 
+  <!-- Converter Form -->
   <form [formGroup]="converterForm" (ngSubmit)="onSubmit(converterForm.value)">
 
     <div class="example-container">
+
+      <!--  From Currency  -->
       <mat-form-field appearance="fill">
         <mat-label>From</mat-label>
         <input type="text" placeholder="from" matInput formControlName="from" (keypress)="onFromValueChange()"
@@ -14,6 +17,7 @@
         </mat-autocomplete>
       </mat-form-field>
 
+      <!--  To Currency  -->
       <mat-form-field appearance="fill">
         <mat-label>To</mat-label>
         <input type="text" placeholder="to" matInput formControlName="to" (keypress)="onToValueChange()"
@@ -25,24 +29,31 @@
         </mat-autocomplete>
       </mat-form-field>
 
+      <!--  Date of conversion  -->
       <mat-form-field appearance="fill">
         <mat-label>Date</mat-label>
         <input matInput type="date" id="date" placeholder="date" formControlName="date">
       </mat-form-field>
 
+      <!--  value for conversion  -->
       <mat-form-field appearance="fill">
         <mat-label>value</mat-label>
-        <input matInput type="text" id="value" placeholder="value" formControlName="value">
+        <input matInput type="number" id="value" placeholder="value" formControlName="value">
       </mat-form-field>
 
+      <!--  Submit  -->
       <button mat-raised-button color="primary" [disabled]="converterForm.invalid" >submit</button>
+
     </div>
+
   </form>
 
-  <div *ngIf="converterOutput">
+  <!-- Output block  -->
+  <div *ngIf="converterOutput && converterForm.dirty">
     <p> From: {{converterOutput.from}} </p>
     <p> To: {{converterOutput.to}} </p>
     <p> Date: {{converterOutput.date}}</p>
+    <p> Amount: {{converterOutput.value}}</p>
     <p> Series: {{converterOutput.series}}</p>
     <p> 1 {{converterOutput.from}} = {{converterOutput.conversionFactor}} {{converterOutput.to}}</p>
     <p>Final Value: {{converterOutput.calculatedAmount}}</p>

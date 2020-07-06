@@ -1,4 +1,6 @@
+import { environment } from './../environments/environment';
+
 export class Constants {
-  public static readonly GET_OBSERVATION= `https://www.bankofcanada.ca/valet/observations/`;
-  public static readonly GET_SERIES = `https://www.bankofcanada.ca/valet/lists/series/json`;
+  public static readonly GET_OBSERVATION = `${environment.baseUrl}/observations/`;
+  public static readonly GET_SERIES = `${environment.baseUrl}/lists/series/json`;
 }

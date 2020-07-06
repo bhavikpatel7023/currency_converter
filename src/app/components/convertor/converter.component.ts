@@ -12,15 +12,10 @@ import {ConverterForm, ConverterOutput} from '../../../shared/models/converter';
 })
 
 export class ConverterComponent implements OnInit {
-  inputRate: number = null;
-  convertedRate: number = null;
-  series: string = null;
-  submittedValue: any = null;
 
   converterForm: FormGroup;
   converterOutput: ConverterOutput;
-  seriesResponse: any;
-  currencyCode: any[] = [];
+  currencyCode: string[] = [];
   filteredCurrencyCodeFrom: Observable<any[]>;
   filteredCurrencyCodeTo: Observable<any[]>;
 
@@ -31,7 +26,6 @@ export class ConverterComponent implements OnInit {
     private converterService: ConverterService,
     private formBuilder: FormBuilder
   ) {
-
     this.converterForm = this.formBuilder.group({
       from: new FormControl('', [Validators.required]),
       to: new FormControl('', [Validators.required]),
@@ -44,11 +38,9 @@ export class ConverterComponent implements OnInit {
    * Initialize a component.
    */
   ngOnInit(): void {
-    this.converterService.getSeries().subscribe(res => {
-      this.seriesResponse = res;
-      this.convertSeriesList();
+    this.converterService.getSeries().subscribe(response => {
+      this.convertSeriesList(response);
     });
-
   }
 
   /**
@@ -58,7 +50,7 @@ export class ConverterComponent implements OnInit {
   onFromValueChange(): void {
     this.filteredCurrencyCodeFrom = this.converterForm.get('from').valueChanges
       .pipe(
-        map(value => value ? this._filter(value) : this.currencyCode.slice())
+        map(value => value ? this.filter(value) : this.currencyCode.slice())
       );
   }
 
@@ -69,11 +61,11 @@ export class ConverterComponent implements OnInit {
   onToValueChange(): void {
     this.filteredCurrencyCodeTo = this.converterForm.get('to').valueChanges
       .pipe(
-        map(value => value ? this._filter(value) : this.currencyCode.slice())
+        map(value => value ? this.filter(value) : this.currencyCode.slice())
       );
   }
 
-  private _filter(name: string): string[] {
+  private filter(name: string): string[] {
     const filterValue = name.toLowerCase();
     return this.currencyCode.filter(option => option.toLowerCase().indexOf(filterValue) === 0);
   }
@@ -82,10 +74,9 @@ export class ConverterComponent implements OnInit {
    * Convert series of Bank of Canada into Currency code
    * Only Applicable for series start with FX
    */
-  convertSeriesList(): void {
-    for (const [key, value] of Object.entries(this.seriesResponse.series)) {
+  convertSeriesList(response: any): void {
+    for (const [key, value] of Object.entries(response.series)) {
       if (key.toUpperCase().startsWith('FX') && key.length === 8) {
-        console.log(key, value)
         this.currencyCode.push(key.substring(2, 5));
         this.currencyCode.push(key.substring(5, 8));
       }
@@ -96,31 +87,21 @@ export class ConverterComponent implements OnInit {
   /**
    * form submit function
    */
-  onSubmit = (customerData: ConverterForm): void => {
-    const series = 'FX' + customerData.from.toUpperCase() + customerData.to.toUpperCase();
-    this.getObservationByDate(customerData, series);
-  }
-
-  /**
-   * Clear all output
-   */
-  clearOutput() {
-    this.inputRate = null;
-    this.convertedRate = null;
-    this.series = null;
-    this.submittedValue = null;
+  onSubmit(form: ConverterForm): void{
+    const series = `FX${form.from.toUpperCase()}${form.to.toUpperCase()}`;
+    this.getObservationByDate(form, series);
   }
 
   /**
    * Call Bank of Canada API to get observation for specific date
-   * @param customerData
+   * @param form
    * @param series
    * @returns void
    */
-  getObservationByDate = (form: ConverterForm, series): any => {
-    this.converterService.getobservationBasedOnDate(form.date, series).subscribe(res => {
-      if (res.observations.length) {
-        this.converterOutput = new ConverterOutput(form, series, res.observations[0][series].v);
+  getObservationByDate(form: ConverterForm, series: string): void {
+    this.converterService.getobservationBasedOnDate(form.date, series).subscribe(response => {
+      if (response.observations.length > 0) {
+        this.converterOutput = new ConverterOutput(form, series, response.observations[0][series].v);
         this.converterOutput.calculate();
       } else {
         alert('No observation found for specific date');
