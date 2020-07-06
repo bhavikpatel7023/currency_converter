@@ -12,7 +12,7 @@ npm install
 npm i
 ```
 
-## Installation
+## Run it locally
 Just hit
 ```bash
 npm start
@@ -22,14 +22,6 @@ Run
 ```bash
 ng serve --open
 ```
-
-## What practices I have follow in example
-1. modularized code including single responsibility, smaller function, shared module
-2. Naming guideline by Angular
-3. standard project directory structure
-4. http interceptor
-5. observable subscriber
-
 
 ## My assumption
  -   I used https://www.bankofcanada.ca/valet link as there were no listed url in requirement document for bank of canada foreign exchange API.
