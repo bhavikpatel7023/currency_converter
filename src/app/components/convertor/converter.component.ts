@@ -4,6 +4,7 @@ import {Observable} from 'rxjs';
 import {ConverterService} from '../../../shared/services/converter.service';
 import {map} from 'rxjs/operators';
 import {ConverterForm, ConverterOutput} from '../../../shared/models/converter';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'converter',
@@ -18,19 +19,22 @@ export class ConverterComponent implements OnInit {
   currencyCode: string[] = [];
   filteredCurrencyCodeFrom: Observable<any[]>;
   filteredCurrencyCodeTo: Observable<any[]>;
+  date: string;
 
   /**
    * Creates an instance of App Component.
    */
   constructor(
     private converterService: ConverterService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private datePipe: DatePipe
   ) {
+    this.date =  this.datePipe.transform(new Date(), 'yyyy-MM-dd');
     this.converterForm = this.formBuilder.group({
       from: new FormControl('', [Validators.required]),
       to: new FormControl('', [Validators.required]),
-      date: new FormControl('', [Validators.required]),
-      value: new FormControl('', [Validators.required]),
+      date: new FormControl(this.date, [Validators.required]),
+      value: new FormControl('', [Validators.required, Validators.min(0.0001)]),
     });
   }
 

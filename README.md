@@ -12,8 +12,16 @@ npm install
 npm i
 ```
 
+## Installation
+Just hit
+```bash
+npm start
+```
 If you already have angular cli in local machine the just run
-Run `ng serve --open`
+Run 
+```bash
+ng serve --open
+```
 
 ## What practices I have follow in example
 1. modularized code including single responsibility, smaller function, shared module
@@ -24,8 +32,8 @@ Run `ng serve --open`
 
 
 ## My assumption
-1. I used https://www.bankofcanada.ca/valet link as there were no listed url in requirement document for bank of canada foreign exchange API.
-2. I'm only considering series that startwith 'FX'. More information about series you can find here: https://www.bankofcanada.ca/valet/lists/series/json
+ -   I used https://www.bankofcanada.ca/valet link as there were no listed url in requirement document for bank of canada foreign exchange API.
+ - I'm only considering series that startwith 'FX'. More information about series you can find here: https://www.bankofcanada.ca/valet/lists/series/json
 ```typescript
   convertSeriesList(response: any): void {
     for (const [key, value] of Object.entries(response.series)) {
@@ -37,7 +45,7 @@ Run `ng serve --open`
     this.currencyCode = Array.from(new Set(this.currencyCode));
   }
 ```
-3. I'm assuming that, there will be only one observation per day. I noticed that, there will be always on observation per day.
+ - I'm assuming that, there will be only one observation per day. I noticed that, there will be always on observation per day.
 
 ```typescript
     this.converterService.getobservationBasedOnDate(form.date, series).subscribe(response => {
@@ -49,6 +57,7 @@ Run `ng serve --open`
       }
     });
 ```
+ - As we are looking for 4 floating point value. I'm assume that lower value for conversion would be 0.0001.
 
 
 
