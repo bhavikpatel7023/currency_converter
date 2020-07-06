@@ -50,6 +50,8 @@ ng serve --open
     });
 ```
  - As we are looking for 4 floating point value. I'm assume that lower value for conversion would be 0.0001.
+ - Not acceptable: 0.00009
+ - Acceptable 0.00012
 
 
 
