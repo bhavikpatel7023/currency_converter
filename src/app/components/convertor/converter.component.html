@@ -35,16 +35,16 @@
         <input matInput type="text" id="value" placeholder="value" formControlName="value">
       </mat-form-field>
 
-      <button mat-raised-button color="primary">submit</button>
+      <button mat-raised-button color="primary" [disabled]="converterForm.invalid" >submit</button>
     </div>
   </form>
 
-  <div *ngIf="submittedValue">
-    <p> From: {{submittedValue.from}} </p>
-    <p> To: {{submittedValue.to}} </p>
-    <p> Date: {{submittedValue.date}}</p>
-    <p> Series: {{series}}</p>
-    <p> 1 {{submittedValue.from}} = {{inputRate}} {{submittedValue.to}}</p>
-    <p>Final Value: {{convertedRate}}</p>
+  <div *ngIf="converterOutput">
+    <p> From: {{converterOutput.from}} </p>
+    <p> To: {{converterOutput.to}} </p>
+    <p> Date: {{converterOutput.date}}</p>
+    <p> Series: {{converterOutput.series}}</p>
+    <p> 1 {{converterOutput.from}} = {{converterOutput.conversionFactor}} {{converterOutput.to}}</p>
+    <p>Final Value: {{converterOutput.calculatedAmount}}</p>
   </div>
 </div>

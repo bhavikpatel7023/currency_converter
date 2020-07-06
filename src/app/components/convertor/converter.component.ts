@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Observable} from 'rxjs';
-import {ConverterService} from './converter.service';
-import {DatePipe} from '@angular/common';
+import {ConverterService} from '../../../shared/services/converter.service';
 import {map} from 'rxjs/operators';
+import {ConverterForm, ConverterOutput} from '../../../shared/models/converter';
 
 @Component({
   selector: 'converter',
@@ -18,6 +18,7 @@ export class ConverterComponent implements OnInit {
   submittedValue: any = null;
 
   converterForm: FormGroup;
+  converterOutput: ConverterOutput;
   seriesResponse: any;
   currencyCode: any[] = [];
   filteredCurrencyCodeFrom: Observable<any[]>;
@@ -28,15 +29,14 @@ export class ConverterComponent implements OnInit {
    */
   constructor(
     private converterService: ConverterService,
-    private formBuilder: FormBuilder,
-    private datePipe: DatePipe
+    private formBuilder: FormBuilder
   ) {
 
     this.converterForm = this.formBuilder.group({
-      from: new FormControl('USD', [Validators.required]),
-      to: new FormControl('CAD', [Validators.required]),
-      date: new FormControl('2020-07-03', [Validators.required]),
-      value: new FormControl(100, [Validators.required]),
+      from: new FormControl('', [Validators.required]),
+      to: new FormControl('', [Validators.required]),
+      date: new FormControl('', [Validators.required]),
+      value: new FormControl('', [Validators.required]),
     });
   }
 
@@ -96,8 +96,8 @@ export class ConverterComponent implements OnInit {
   /**
    * form submit function
    */
-  onSubmit = (customerData): void => {
-    const series = 'FX' + customerData.from + customerData.to;
+  onSubmit = (customerData: ConverterForm): void => {
+    const series = 'FX' + customerData.from.toUpperCase() + customerData.to.toUpperCase();
     this.getObservationByDate(customerData, series);
   }
 
@@ -117,13 +117,11 @@ export class ConverterComponent implements OnInit {
    * @param series
    * @returns void
    */
-  getObservationByDate = (customerData, series): any => {
-    this.converterService.getobservationBasedOnDate(customerData.date, series).subscribe(res => {
+  getObservationByDate = (form: ConverterForm, series): any => {
+    this.converterService.getobservationBasedOnDate(form.date, series).subscribe(res => {
       if (res.observations.length) {
-        this.inputRate = res.observations[0][series].v;
-        this.submittedValue = customerData;
-        this.convertedRate = this.inputRate * customerData.value;
-        this.series = series;
+        this.converterOutput = new ConverterOutput(form, series, res.observations[0][series].v);
+        this.converterOutput.calculate();
       } else {
         alert('No observation found for specific date');
       }
